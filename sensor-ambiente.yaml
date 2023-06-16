@@ -1,0 +1,62 @@
+substitutions:
+
+  #Configurações:
+  TipoPlaca: esp01_1m #Altere para o tipo da sua placa
+  codename: 'senor-ambiente' #Hostname do dispositivo na rede (não usar underline '_' pois atrapalha o funcionamento do mDNS).
+  friendlyname: 'senor-ambiente' #Hostname do dispositivo na rede (não usar underline '_' pois atrapalha o funcionamento do mDNS).
+
+  #Configurações da rede
+  RedeWifi: !secret RedeWifi_1 #Nome da rede wifi que o dispositivo irá se conectar
+  SenhaWifi: !secret  SenhaWifi_1 #Senha da rede wifi que o dispositivo irá se conectar
+  RedeWifi2: !secret RedeWifi_2 #Nome da rede wifi que o dispositivo irá se conectar
+  SenhaWifi2: !secret  SenhaWifi_2 #Senha da rede wifi que o dispositivo irá se conectar
+  SenhaWifiReconfig: !secret SenhaWifiReconfig #Senha do AP Wifi para reconfiguração do wifi do dispositivo
+  WifiOculto: 'False' #Se a rede wifi está oculta defina como 'True'
+  WifiFastConnect: 'False' #Se o esp realizará a conexão à rede wifi sem escanear as redes disponíveis defina como 'True'
+
+  #Senhas
+  SenhaOTA: !secret SenhaOTA #Senha para atualizar o firmware do esp via OTA
+
+esphome:
+  name: senor-teto
+  friendly_name: senor-teto
+  name_add_mac_suffix: True
+  # includes:
+  #   - tof_vl53l1x.h
+  # libraries:
+  #   - "Wire"
+  #   - "VL53L1x"
+
+esp8266:
+  board: esp01_1m
+
+# Enable logging
+logger:
+  baud_rate: 0
+
+wifi:
+  networks:
+  - ssid: ${RedeWifi}
+    password: ${SenhaWifi}
+    hidden: ${WifiOculto}
+  - ssid: ${RedeWifi2}
+    password: ${SenhaWifi2}
+    hidden: ${WifiOculto}
+  fast_connect: ${WifiFastConnect}
+  power_save_mode: none
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: ${codename} - WIFI
+    password: ${SenhaWifiReconfig}
+
+# Enable Home Assistant API
+api:
+  encryption:
+    key: "HGRG06w2Lusdw/7KaP7703yN2vF8nPEHrJ+7jOJEDlE="
+
+ota:
+  password: ${SenhaOTA}
+
+captive_portal:
+    
