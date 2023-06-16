@@ -1,62 +1,53 @@
+# These substitutions allow the end user to override certain values
 substitutions:
-
-  #Configurações:
-  TipoPlaca: esp01_1m #Altere para o tipo da sua placa
-  codename: 'senor-ambiente' #Hostname do dispositivo na rede (não usar underline '_' pois atrapalha o funcionamento do mDNS).
-  friendlyname: 'senor-ambiente' #Hostname do dispositivo na rede (não usar underline '_' pois atrapalha o funcionamento do mDNS).
-
-  #Configurações da rede
-  RedeWifi: !secret RedeWifi_1 #Nome da rede wifi que o dispositivo irá se conectar
-  SenhaWifi: !secret  SenhaWifi_1 #Senha da rede wifi que o dispositivo irá se conectar
-  RedeWifi2: !secret RedeWifi_2 #Nome da rede wifi que o dispositivo irá se conectar
-  SenhaWifi2: !secret  SenhaWifi_2 #Senha da rede wifi que o dispositivo irá se conectar
-  SenhaWifiReconfig: !secret SenhaWifiReconfig #Senha do AP Wifi para reconfiguração do wifi do dispositivo
-  WifiOculto: 'False' #Se a rede wifi está oculta defina como 'True'
-  WifiFastConnect: 'False' #Se o esp realizará a conexão à rede wifi sem escanear as redes disponíveis defina como 'True'
-
-  #Senhas
-  SenhaOTA: !secret SenhaOTA #Senha para atualizar o firmware do esp via OTA
+  name: "senor-ambiente"
 
 esphome:
-  name: senor-teto
-  friendly_name: senor-teto
-  name_add_mac_suffix: True
-  # includes:
-  #   - tof_vl53l1x.h
-  # libraries:
-  #   - "Wire"
-  #   - "VL53L1x"
+  name: "${name}"
+  # Automatically add the mac address to the name
+  # so you can use a single firmware for all devices
+  name_add_mac_suffix: true
+
+  # This will allow for (future) project identification,
+  # configuration and updates.
+  project:
+    name: esphome.senor-ambiente
+    version: "0.0.1"
 
 esp8266:
   board: esp01_1m
 
-# Enable logging
+# To be able to get logs from the device via serial and api.
 logger:
-  baud_rate: 0
+
+# API is a requirement of the dashboard import.
+api:
+
+# OTA is required for Over-the-Air updating
+ota:
+
+# This should point to the public location of this yaml file.
+dashboard_import:
+  package_import_url: github://leongalera/esphome/sensor-ambiente.yaml@main
 
 wifi:
-  networks:
-  - ssid: ${RedeWifi}
-    password: ${SenhaWifi}
-    hidden: ${WifiOculto}
-  - ssid: ${RedeWifi2}
-    password: ${SenhaWifi2}
-    hidden: ${WifiOculto}
-  fast_connect: ${WifiFastConnect}
-  power_save_mode: none
-
-  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  # Set up a wifi access point using the device name above
   ap:
-    ssid: ${codename} - WIFI
-    password: ${SenhaWifiReconfig}
+    password: "96228198"
 
-# Enable Home Assistant API
-api:
-  encryption:
-    key: "HGRG06w2Lusdw/7KaP7703yN2vF8nPEHrJ+7jOJEDlE="
-
-ota:
-  password: ${SenhaOTA}
-
+# In combination with the `ap` this allows the user
+# to provision wifi credentials to the device.
 captive_portal:
+
+
+##########################################################
+# Most projects should not remove anything from above here
+# and should just modify the name, project name/version 
+# and git url for the dashboard_import
+##########################################################
+
+
+# Sets up the improv via serial client for Wi-Fi provisioning.
+# Handy if your device has a usb port for the user to add credentials when they first get it.
+improv_serial:
     
