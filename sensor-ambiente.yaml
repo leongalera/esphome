@@ -29,7 +29,7 @@ ota:
 # This should point to the public location of this yaml file.
 dashboard_import:
   package_import_url: github://leongalera/esphome/sensor-ambiente.yaml@main
-  import_full_config: true
+  
 wifi:
   # Set up a wifi access point using the device name above
   ap:
